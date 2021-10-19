@@ -10,5 +10,8 @@ export const tpAPICall = async(method: string, url: string, body: any) => {
 		data: body
 	})
 
+	// There could likely be some error handling here if the Promise was to be resolved
+	// before it was returned in the .then() and .catch() methods.
+
 	return response;
 };

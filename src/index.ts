@@ -9,6 +9,7 @@ const port: number = 8000;
 // Ensure we have the proper parsing for requests
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(bodyParser.text({type:"*/*"}));
 
 // Basic logging to check incoming requests
 app.use((req: Request, res: Response, next: NextFunction) => {
@@ -19,7 +20,8 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   console.log("==============================");
   next();
 });
-
+// Add routes to the main application
 app.use('/', router)
 
+// Start the server on port 8000
 app.listen(port, () => console.log(`App is listening on port ${port}`));

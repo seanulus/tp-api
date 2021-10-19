@@ -1,6 +1,7 @@
 import express, { Request, Response, NextFunction, Router } from 'express';
 import shortid from 'shortid';
 import * as bodyParser from 'body-parser';
+import { ReqBodyPutCallback, ReqBodyGetCallback } from '../interfaces/reqBody';
 // import { tpAPICall } from '../helpers/tp-api-call';
 
 export const router: Router = express.Router()
@@ -9,10 +10,10 @@ router.post('/request', async(req: Request, res: Response, next: NextFunction) =
 		
 	try {
 		// Generate a somewhat unique shortid to include in the callback url
-		const documentId: string = shortid.generate()
+		const documentId: string = shortid.generate();
 
-		const { body } = req
-		body.callback = `callback/${documentId}`
+		const { body } = req;
+		body.callback = `callback/${documentId}`;
 		
 		const url: string = 'http://example.com/request';
 
@@ -31,10 +32,17 @@ router.post('/request', async(req: Request, res: Response, next: NextFunction) =
 		// console.log(result)
 
 		/* 
+		Either before or after the call to the third party API, an 
+		entry should be created in the db, something along the lines
+		of db.status.create() to be updated in the PUT call later.
+
 		It was a bit unclear what was supposed to be sent back here. 
-		The callback is needed later for the GET call 
+		Based on this line:
+		-It will also create a unique identifer for this request we can later reference. 
+
+		The id is being returned
 		*/
-		res.status(200).send(body.callback);
+		res.status(200).send(documentId);
 
 	} catch(err) {
 		console.error(err)
@@ -57,13 +65,62 @@ router.post('/callback/:id', async(req: Request, res: Response, next: NextFuncti
 
 router.put('/callback/:id', async(req: Request, res: Response, next: NextFunction) => {
 	try {
+		const body: ReqBodyPutCallback = req.body;
 
-		res.status(204).send()
+		let keys = [];
+		const allowedKeys = ['status', 'detail'];
+		let unionValue;
+		const allowedVals = ['PROCESSED', 'COMPLETED', 'ERROR'];
+
+		// Gather keys and check allowed union values
+		Object.entries((body)).forEach((key, val) => {
+			keys.push(key[0]);
+			if(allowedVals.includes(key[1])) {
+				unionValue = key[1];
+			}
+		})
+		// Function to shallow compare arrays and check validity of included keys
+		const equals = (a, b) =>
+	  a.length === b.length &&
+	  a.every((v, i) => v === b[i]);
+
+		console.log(equals(keys, allowedKeys));
+		console.log(unionValue)
+		
+		if(equals(keys, allowedKeys) && allowedVals.includes(unionValue)) {
+			/*
+			If the conditions are met, a call to the db should happen here to update the 
+			referenced entry with the included req.params.id. Something along the lines of
+			db.status.update({ where: { id: id } }, data: { update data fields here })
+			Once completed, send the no-content response back.
+			 */
+			res.status(204).send()
+		} else {
+			// Send a bad request status back to the user id request is malformed
+			res.status(400).send('Bad Request: Your request is malformed. Please check your input values.')
+		}
+
 	}catch(err) {
-
+		console.error(err);
 	}
 })
 
-router.get('status/:id', async(req: Request, res: Response, next: NextFunction) => {
+router.get('/status/:id', async(req: Request, res: Response, next: NextFunction) => {
+	// Gather the id parameter from the request
+	const idParam: string = req.params.id
+
+	/*
+	Here is where to call the stateful store/db to get the proper entry and return 
+	the requested data. Something along the lines of db.status.findOne({ where: { id: idParam } })
+	Once the value is returned, we can construct the response.
+	 */
+	
+	const responseObject: ReqBodyGetCallback = {
+		status: "COMPLETED",
+		detail: "Your process has been completed.",
+		body: "The body from before"
+	}
+	
+	res.status(200).send()
 
 })

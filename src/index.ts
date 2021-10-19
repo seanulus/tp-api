@@ -1,5 +1,6 @@
 import express, { Request, Response, NextFunction, Express } from 'express';
 import * as bodyParser from 'body-parser';
+import { router } from './routes/routes';
 
 // Instantiate the express server
 const app: Express = express();
@@ -19,8 +20,6 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
-app.get('/', function(req: Request, res: Response) {
-	res.send({ hi: "there" })
-})
+app.use('/', router)
 
 app.listen(port, () => console.log(`App is listening on port ${port}`));

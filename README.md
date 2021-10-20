@@ -12,3 +12,4 @@ This is a simple application to simulate interacting with a third party API.
 4. After you have succesfully cloned the project you need to install the node_modules. You can do so by running `npm install` in the terminal.
 5. Once the node_modules are installed, you can start the server by running the command `npm start` in the terminal. You should see a message stating `App is listening on port 8000`
 6. From here you should be able to query this server from postman via http://localhost:8000/ or you can run the test suite with `npm run test`.
+>>>>>>> ca7fe7fde0f6519263691b964735d6ecae9e7dff

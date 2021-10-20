@@ -1,7 +1,8 @@
 const axios = require('axios').default;
 
 export const tpAPICall = async(method: string, url: string, body: any) => {
-	const response: Promise | null = await axios({
+	// Would likely change from <any> here to something type safe depending on the situation
+	const response: Promise<any> = await axios({
 		method: method,
 		url: url,
 		headers: {

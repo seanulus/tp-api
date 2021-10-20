@@ -1,9 +1,9 @@
-#Third Party API Exercise#
+# Third Party API Exercise
 ---
 
 This is a simple application to simulate interacting with a third party API.
 
-###Build Instructions###
+### Build Instructions
 ---
 
 1. You will need to make sure you have `node` and `npm` installed

@@ -74,6 +74,7 @@ router.put('/callback/:id', async(req: Request, res: Response, next: NextFunctio
 
 		// Gather keys and check allowed union values
 		Object.entries((body)).forEach((key, val) => {
+			console.log("BODY", key)
 			keys.push(key[0]);
 			if(allowedVals.includes(key[1])) {
 				unionValue = key[1];
@@ -121,6 +122,6 @@ router.get('/status/:id', async(req: Request, res: Response, next: NextFunction)
 		body: "The body from before"
 	}
 	
-	res.status(200).send()
+	res.status(200).send(responseObject)
 
 })

@@ -45,7 +45,7 @@ router.post('/request', async(req: Request, res: Response, next: NextFunction) =
 		res.status(200).send(documentId);
 
 	} catch(err) {
-		console.error(err)
+		res.status(500).send({ error: err })
 	}	
 	
 })
@@ -107,21 +107,25 @@ router.put('/callback/:id', async(req: Request, res: Response, next: NextFunctio
 })
 
 router.get('/status/:id', async(req: Request, res: Response, next: NextFunction) => {
-	// Gather the id parameter from the request
-	const idParam: string = req.params.id
+	try {
+		// Gather the id parameter from the request
+		const idParam: string = req.params.id
 
-	/*
-	Here is where to call the stateful store/db to get the proper entry and return 
-	the requested data. Something along the lines of db.status.findOne({ where: { id: idParam } })
-	Once the value is returned, we can construct the response.
-	 */
-	
-	const responseObject: ReqBodyGetCallback = {
-		status: "COMPLETED",
-		detail: "Your process has been completed.",
-		body: "The body from before"
+		/*
+		Here is where to call the stateful store/db to get the proper entry and return 
+		the requested data. Something along the lines of db.status.findOne({ where: { id: idParam } })
+		Once the value is returned, we can construct the response.
+		 */
+		
+		const responseObject: ReqBodyGetCallback = {
+			status: "COMPLETED",
+			detail: "Your process has been completed.",
+			body: "The body from before"
+		}
+		
+		res.status(200).send(responseObject)
+	} catch(err) {
+		res.status(500).send({ error: err })
 	}
-	
-	res.status(200).send(responseObject)
 
 })

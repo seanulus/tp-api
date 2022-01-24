@@ -1,5 +1,5 @@
 import express, { Request, Response, NextFunction, Router } from 'express';
-import shortid from 'shortid';
+import uniqid from 'uniqid';
 import * as bodyParser from 'body-parser';
 import { ReqBodyPutCallback, ReqBodyGetCallback } from '../interfaces/reqBody';
 // import { tpAPICall } from '../helpers/tp-api-call';
@@ -10,7 +10,7 @@ router.post('/request', async(req: Request, res: Response, next: NextFunction) =
 		
 	try {
 		// Generate a somewhat unique shortid to include in the callback url
-		const documentId: string = shortid.generate();
+		const documentId: string = uniqid()
 
 		const { body } = req;
 		body.callback = `callback/${documentId}`;
@@ -59,7 +59,7 @@ router.post('/callback/:id', async(req: Request, res: Response, next: NextFuncti
 			res.status(500).send({ error: 'Something went wrong with this request.'})
 		}
 	} catch(err) {
-		console.error(err);
+		res.status(500).send({ error: err })
 	}
 })
 
@@ -67,7 +67,7 @@ router.put('/callback/:id', async(req: Request, res: Response, next: NextFunctio
 	try {
 		const body: ReqBodyPutCallback = req.body;
 
-		let keys = [];
+		let keys: string[] = [];
 		const allowedKeys = ['status', 'detail'];
 		let unionValue;
 		const allowedVals = ['PROCESSED', 'COMPLETED', 'ERROR'];
@@ -102,7 +102,7 @@ router.put('/callback/:id', async(req: Request, res: Response, next: NextFunctio
 		}
 
 	}catch(err) {
-		console.error(err);
+		res.status(500).send({ error: err })
 	}
 })
 

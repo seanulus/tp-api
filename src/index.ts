@@ -22,6 +22,9 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 });
 // Add routes to the main application
 app.use('/', router)
+app.use('*', (req, res) => {
+	res.status(404).send("Error 404: PAGE NOT FOUND")
+})
 
 // Start the server on port 8000
 app.listen(port, () => console.log(`App is listening on port ${port}`));

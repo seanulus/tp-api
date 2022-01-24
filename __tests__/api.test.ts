@@ -1,5 +1,5 @@
 require('isomorphic-fetch');
-const shortid = require('shortid');
+const uniqid = require('uniqid');
 
 describe('Test suite to ensure endpoints are functional', () => {
 		
@@ -38,7 +38,6 @@ describe('Test suite to ensure endpoints are functional', () => {
     });
 
     expect(typeof result).toBe('string')
-    expect(shortid.isValid(id)).toBe(true)
 		
 	})
 
